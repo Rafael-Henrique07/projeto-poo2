@@ -1,0 +1,17 @@
+com\mycompany\projeto_poo2\selo\GeradorSelo.class
+com\mycompany\projeto_poo2\service\NotificadorUsuario.class
+com\mycompany\projeto_poo2\selo\SeloAntigo.class
+com\mycompany\projeto_poo2\model\Foto.class
+com\mycompany\projeto_poo2\selo\SeloPreparado.class
+com\mycompany\projeto_poo2\Projeto_poo2.class
+com\mycompany\projeto_poo2\service\ValidadorUsuario.class
+com\mycompany\projeto_poo2\selo\Selo.class
+com\mycompany\projeto_poo2\dao\UsuarioDAO.class
+com\mycompany\projeto_poo2\model\Usuario.class
+com\mycompany\projeto_poo2\model\Categoria.class
+com\mycompany\projeto_poo2\selo\SeloClassico.class
+com\mycompany\projeto_poo2\model\Favorito.class
+com\mycompany\projeto_poo2\model\Contato.class
+com\mycompany\projeto_poo2\util\ConexaoMySQL.class
+com\mycompany\projeto_poo2\service\CadastroUsuarioServico.class
+com\mycompany\projeto_poo2\model\Anuncio.class
