@@ -1,36 +1,32 @@
 package com.mycompany.projeto_poo2.model;
 
 public class Foto {
-    private Integer id;
-    private Anuncio anuncio;
-    private String caminhoArquivo;
 
-    public Foto(Anuncio anuncio, String caminhoArquivo) {
-        this.anuncio = anuncio;
+    private final Integer id;
+    private final String caminhoArquivo;
+    private final int ordem;
+    private final boolean principal;
+
+    public Foto(Integer id, String caminhoArquivo, int ordem, boolean principal) {
+        this.id = id;
         this.caminhoArquivo = caminhoArquivo;
+        this.ordem = ordem;
+        this.principal = principal;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Anuncio getAnuncio() {
-        return anuncio;
-    }
-
     public String getCaminhoArquivo() {
         return caminhoArquivo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public int getOrdem() {
+        return ordem;
     }
 
-    public void setAnuncio(Anuncio anuncio) {
-        this.anuncio = anuncio;
-    }
-
-    public void setCaminhoArquivo(String caminhoArquivo) {
-        this.caminhoArquivo = caminhoArquivo;
+    public boolean isPrincipal() {
+        return principal;
     }
 }

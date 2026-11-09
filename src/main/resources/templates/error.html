@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Erro')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-5 text-center">
+    <h1 class="h3" th:switch="${status}">
+        <span th:case="404">Página não encontrada</span>
+        <span th:case="403">Acesso negado</span>
+        <span th:case="*">Algo deu errado</span>
+    </h1>
+    <p>Volte para a lista de veículos e tente novamente.</p>
+    <a class="btn btn-acento" th:href="@{/}">Ver veículos</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Negociação')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4" th:with="a=${negociacao.anuncio}">
+    <div class="mb-3">
+        <p class="categoria mb-1" th:text="${ehComprador} ? 'Você é o comprador' : 'Você é o anunciante'">Papel</p>
+        <h1 class="h3 mb-1"><a class="link-titulo" th:href="@{/anuncios/{id}(id=${a.id})}" th:text="${a.titulo}">Anúncio</a></h1>
+        <p class="detalhes mb-0">
+            <span th:text="${'Comprador: ' + negociacao.comprador.nome + ' · Anunciante: ' + a.anunciante.nome}"></span>
+            <span class="badge text-bg-secondary ms-1" th:text="${negociacao.status.rotulo}">Aberta</span>
+            <span class="badge text-bg-secondary" th:unless="${a.ativo}" th:text="'Anúncio ' + ${a.status.rotulo.toLowerCase()}">Status</span>
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <section class="col-lg-7">
+            <div class="painel conversa">
+                <div class="mensagem" th:each="m : ${negociacao.mensagens}"
+                     th:classappend="${m.remetente.id == usuarioLogado.id()} ? 'minha' : ''">
+                    <p class="detalhes mb-1" th:text="${m.remetente.nome + ' · ' + #temporals.format(m.dataEnvio, 'dd/MM/yyyy HH:mm')}">Nome</p>
+                    <p class="texto-livre mb-0" th:text="${m.conteudo}">Mensagem</p>
+                </div>
+            </div>
+            <form th:if="${negociacao.aberta}" th:action="@{/negociacoes/{id}/mensagens(id=${negociacao.id})}" method="post" class="painel mt-3">
+                <label class="form-label" for="conteudo">Nova mensagem</label>
+                <textarea class="form-control mb-2" name="conteudo" id="conteudo" rows="3" maxlength="1000" required></textarea>
+                <button class="btn btn-acento" type="submit">Enviar</button>
+            </form>
+            <p class="painel mt-3 mb-0" th:unless="${negociacao.aberta}">Esta negociação foi encerrada.</p>
+        </section>
+
+        <aside class="col-lg-5">
+            <section class="painel" th:if="${ehComprador and negociacao.contatoLiberado}">
+                <h2 class="h5">Contato do anunciante</h2>
+                <dl class="ficha mb-0">
+                    <dt>Nome</dt><dd th:text="${a.anunciante.nome}"></dd>
+                    <dt>Telefone</dt><dd th:text="${a.anunciante.telefone}"></dd>
+                    <dt>E-mail</dt><dd th:text="${a.anunciante.email}"></dd>
+                </dl>
+            </section>
+
+            <section class="painel mt-3" th:if="${ehComprador and negociacao.aberta and a.ativo}">
+                <h2 class="h5">Enviar proposta</h2>
+                <form th:action="@{/negociacoes/{id}/propostas(id=${negociacao.id})}" method="post">
+                    <label class="form-label" for="valor">Valor (R$)</label>
+                    <input class="form-control mb-2" type="number" min="0.01" step="0.01" name="valor" id="valor" required>
+                    <p class="detalhes">Uma nova proposta cancela a proposta pendente anterior.</p>
+                    <button class="btn btn-acento w-100" type="submit">Enviar proposta</button>
+                </form>
+            </section>
+
+            <section class="painel mt-3">
+                <h2 class="h5">Propostas</h2>
+                <p class="mb-0" th:if="${#lists.isEmpty(negociacao.propostas)}">Nenhuma proposta até agora.</p>
+                <div class="item-proposta" th:each="p : ${negociacao.propostas}">
+                    <div>
+                        <p class="fw-bold mb-0" th:text="'R$ ' + ${#numbers.formatDecimal(p.valor, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</p>
+                        <p class="detalhes mb-0" th:text="${#temporals.format(p.dataProposta, 'dd/MM/yyyy HH:mm')}">data</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge text-bg-secondary" th:text="${p.status.rotulo}">Pendente</span>
+                        <div class="d-flex gap-1 mt-1" th:if="${ehAnunciante and p.pendente and negociacao.aberta and a.ativo}">
+                            <form th:action="@{/negociacoes/{id}/propostas/{p}/resposta(id=${negociacao.id},p=${p.id})}" method="post">
+                                <input type="hidden" name="aceitar" value="true">
+                                <button class="btn btn-sm btn-acento" type="submit">Aceitar</button>
+                            </form>
+                            <form th:action="@{/negociacoes/{id}/propostas/{p}/resposta(id=${negociacao.id},p=${p.id})}" method="post">
+                                <input type="hidden" name="aceitar" value="false">
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Recusar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

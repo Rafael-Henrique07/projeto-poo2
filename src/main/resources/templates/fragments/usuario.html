@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="campos">
+    <div class="mb-3">
+        <label class="form-label" for="nome">Nome</label>
+        <input class="form-control" th:field="*{nome}" id="nome" maxlength="100" autocomplete="name" required>
+        <div class="erro-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="email">E-mail</label>
+        <input class="form-control" type="email" th:field="*{email}" id="email" maxlength="150" autocomplete="email" required>
+        <div class="erro-campo" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="telefone">Telefone com DDD</label>
+        <input class="form-control" type="tel" th:field="*{telefone}" id="telefone" maxlength="20" autocomplete="tel" required>
+        <div class="erro-campo" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></div>
+    </div>
+    <div class="row g-2 mb-3">
+        <div class="col-8">
+            <label class="form-label" for="cidade">Cidade</label>
+            <input class="form-control" th:field="*{cidade}" id="cidade" maxlength="100" autocomplete="address-level2" required>
+            <div class="erro-campo" th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}"></div>
+        </div>
+        <div class="col-4">
+            <label class="form-label" for="uf">UF</label>
+            <select class="form-select" th:field="*{uf}" id="uf" required>
+                <option value=""></option>
+                <option th:each="u : ${ufs}" th:value="${u}" th:text="${u}"></option>
+            </select>
+            <div class="erro-campo" th:if="${#fields.hasErrors('uf')}" th:errors="*{uf}"></div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

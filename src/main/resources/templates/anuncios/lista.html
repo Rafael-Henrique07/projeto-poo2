@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Veículos')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4">
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <form th:action="@{/}" method="get" th:object="${filtro}" class="painel">
+                <h1 class="h5 mb-3">Pesquisar veículos</h1>
+                <div class="mb-3">
+                    <label class="form-label" for="busca">Marca, modelo ou título</label>
+                    <input class="form-control" th:field="*{busca}" id="busca" maxlength="80">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="categoriaId">Categoria</label>
+                    <select class="form-select" th:field="*{categoriaId}" id="categoriaId">
+                        <option value="">Todas</option>
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="marca">Marca</label>
+                    <input class="form-control" th:field="*{marca}" id="marca" maxlength="60">
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label" for="anoMin">Ano de</label>
+                        <input class="form-control" type="number" min="1900" th:field="*{anoMin}" id="anoMin">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="anoMax">até</label>
+                        <input class="form-control" type="number" min="1900" th:field="*{anoMax}" id="anoMax">
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label" for="precoMin">Preço de</label>
+                        <input class="form-control" type="number" min="0" step="0.01" th:field="*{precoMin}" id="precoMin">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="precoMax">até</label>
+                        <input class="form-control" type="number" min="0" step="0.01" th:field="*{precoMax}" id="precoMax">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="conservacao">Estado de conservação</label>
+                    <select class="form-select" th:field="*{conservacao}" id="conservacao">
+                        <option value="">Todos</option>
+                        <option th:each="e : ${estados}" th:value="${e}" th:text="${e.rotulo}"></option>
+                    </select>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-8">
+                        <label class="form-label" for="cidade">Cidade</label>
+                        <input class="form-control" th:field="*{cidade}" id="cidade" maxlength="100">
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label" for="uf">UF</label>
+                        <select class="form-select" th:field="*{uf}" id="uf">
+                            <option value=""></option>
+                            <option th:each="u : ${ufs}" th:value="${u}" th:text="${u}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="selo">Selo</label>
+                    <select class="form-select" th:field="*{selo}" id="selo">
+                        <option value="">Todos</option>
+                        <option th:each="s : ${selos}" th:value="${s}" th:text="${s.rotulo}"></option>
+                    </select>
+                </div>
+                <button class="btn btn-acento w-100" type="submit">Pesquisar</button>
+                <a class="btn btn-link w-100 mt-1" th:href="@{/}">Limpar filtros</a>
+            </form>
+        </aside>
+
+        <section class="col-lg-9">
+            <p class="contagem" th:text="${pagina.totalItens} + ' anúncio(s) encontrado(s)'">0 anúncios</p>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" th:unless="${#lists.isEmpty(pagina.itens)}">
+                <div class="col" th:each="a : ${pagina.itens}">
+                    <article th:replace="~{fragments/anuncio :: card(${a})}"></article>
+                </div>
+            </div>
+            <div class="painel text-center py-5" th:if="${#lists.isEmpty(pagina.itens)}">
+                <p class="mb-0">Nenhum anúncio encontrado com esses filtros.</p>
+            </div>
+            <nav class="paginacao" th:if="${pagina.totalPaginas > 1}" aria-label="Paginação">
+                <a class="btn btn-outline-secondary btn-sm" th:classappend="${pagina.temAnterior} ? '' : 'disabled'"
+                   th:href="@{/(busca=${filtro.busca},categoriaId=${filtro.categoriaId},marca=${filtro.marca},anoMin=${filtro.anoMin},anoMax=${filtro.anoMax},precoMin=${filtro.precoMin},precoMax=${filtro.precoMax},conservacao=${filtro.conservacao},cidade=${filtro.cidade},uf=${filtro.uf},selo=${filtro.selo},pagina=${pagina.numero - 1})}">Anterior</a>
+                <span th:text="'Página ' + ${pagina.numero} + ' de ' + ${pagina.totalPaginas}">Página 1 de 1</span>
+                <a class="btn btn-outline-secondary btn-sm" th:classappend="${pagina.temProxima} ? '' : 'disabled'"
+                   th:href="@{/(busca=${filtro.busca},categoriaId=${filtro.categoriaId},marca=${filtro.marca},anoMin=${filtro.anoMin},anoMax=${filtro.anoMax},precoMin=${filtro.precoMin},precoMax=${filtro.precoMax},conservacao=${filtro.conservacao},cidade=${filtro.cidade},uf=${filtro.uf},selo=${filtro.selo},pagina=${pagina.numero + 1})}">Próxima</a>
+            </nav>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

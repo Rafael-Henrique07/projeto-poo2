@@ -1,38 +1,45 @@
 package com.mycompany.projeto_poo2.model;
 
-public class Usuario {
-    
-    private Integer id;
-    private String nome;
-    private String email;
-    private String senha;
-    private String telefone;
-    private boolean comprador;
-    private boolean anunciante;
-    
-    // Construtor para cadastrar um usuário novo (rega de negócio automática)
-    public Usuario(String nome, String email, String senha, String telefone) {
-        
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.telefone = telefone;
-        this.comprador = true;
-        this.anunciante = false;
-        
-    }
+import java.time.LocalDateTime;
 
-    // Construtor para reconstituir um usuário que já existe no banco
-    public Usuario(Integer id, String nome, String email, String senha, String telefone, boolean comprador, boolean anunciante) {
-        
+public class Usuario {
+
+    private final Integer id;
+    private final String nome;
+    private final String email;
+    private final String senhaHash;
+    private final String telefone;
+    private final String cidade;
+    private final String uf;
+    private final PerfilUsuario perfil;
+    private final boolean ativo;
+    private final LocalDateTime dataCadastro;
+
+    public Usuario(Integer id, String nome, String email, String senhaHash, String telefone, String cidade,
+            String uf, PerfilUsuario perfil, boolean ativo, LocalDateTime dataCadastro) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
+        this.senhaHash = senhaHash;
         this.telefone = telefone;
-        this.comprador = comprador;
-        this.anunciante = anunciante;
-        
+        this.cidade = cidade;
+        this.uf = uf;
+        this.perfil = perfil;
+        this.ativo = ativo;
+        this.dataCadastro = dataCadastro;
+    }
+
+    public static Usuario novo(String nome, String email, String senhaHash, String telefone, String cidade, String uf) {
+        return new Usuario(null, nome, email, senhaHash, telefone, cidade, uf, PerfilUsuario.COMUM, true,
+                LocalDateTime.now());
+    }
+
+    public static Usuario resumo(Integer id, String nome) {
+        return new Usuario(id, nome, null, null, null, null, null, null, true, null);
+    }
+
+    public boolean isAdministrador() {
+        return perfil == PerfilUsuario.ADMINISTRADOR;
     }
 
     public Integer getId() {
@@ -47,53 +54,31 @@ public class Usuario {
         return email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getSenhaHash() {
+        return senhaHash;
     }
 
     public String getTelefone() {
         return telefone;
     }
 
-    public boolean isComprador() {
-        return comprador;
+    public String getCidade() {
+        return cidade;
     }
 
-    public boolean isAnunciante() {
-        return anunciante;
-    }
-    
-    public void setId(Integer id) {
-        this.id = id;
+    public String getUf() {
+        return uf;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public PerfilUsuario getPerfil() {
+        return perfil;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public boolean isAtivo() {
+        return ativo;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setComprador(boolean comprador) {
-        this.comprador = comprador;
-    }
-
-    public void setAnunciante(boolean anunciante) {
-        this.anunciante = anunciante;
-    }
-    
-    public void tornarAnunciante() {
-        
-        this.anunciante = true;
-        
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
     }
 }

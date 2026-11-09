@@ -1,13 +1,15 @@
 package com.mycompany.projeto_poo2.service;
 
-import com.mycompany.projeto_poo2.model.Usuario;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NotificadorUsuario {
-    
-    public void enviarBoasVindas(Usuario usuario) {
-        
-        System.out.println("Enviando e-mail de boas vindas para " + usuario.getEmail());
-        
+
+    private static final Logger log = LoggerFactory.getLogger(NotificadorUsuario.class);
+
+    public void enviarBoasVindas(Integer usuarioId) {
+        log.info("[simulacao] E-mail de boas-vindas para o usuario id={}", usuarioId);
     }
-    
 }

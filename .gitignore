@@ -1,0 +1,15 @@
+# Build
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+nbproject/
+nb-configuration.xml
+
+# Configuracao local com a senha do banco (nunca versionar)
+config-local.properties
+
+# Fotos enviadas pelos usuarios
+uploads/

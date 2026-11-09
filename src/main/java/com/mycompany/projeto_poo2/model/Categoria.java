@@ -1,11 +1,15 @@
 package com.mycompany.projeto_poo2.model;
 
 public class Categoria {
-    private Integer id;
-    private String nome;
 
-    public Categoria(String nome) {
+    private final Integer id;
+    private final String nome;
+    private final String descricao;
+
+    public Categoria(Integer id, String nome, String descricao) {
+        this.id = id;
         this.nome = nome;
+        this.descricao = descricao;
     }
 
     public Integer getId() {
@@ -16,11 +20,7 @@ public class Categoria {
         return nome;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getDescricao() {
+        return descricao;
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }  
 }

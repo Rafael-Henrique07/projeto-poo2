@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Meu perfil')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4 estreito">
+    <h1 class="h3 mb-3">Meu perfil</h1>
+    <form th:action="@{/perfil}" method="post" th:object="${form}" class="painel" novalidate>
+        <h2 class="h5">Dados cadastrais</h2>
+        <th:block th:replace="~{fragments/usuario :: campos}"></th:block>
+        <button class="btn btn-acento w-100" type="submit">Salvar dados</button>
+    </form>
+
+    <form th:action="@{/perfil/senha}" method="post" class="painel mt-3">
+        <h2 class="h5">Alterar senha</h2>
+        <div class="mb-3">
+            <label class="form-label" for="senhaAtual">Senha atual</label>
+            <input class="form-control" type="password" name="senhaAtual" id="senhaAtual" autocomplete="current-password" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="novaSenha">Nova senha (mínimo de 8 caracteres)</label>
+            <input class="form-control" type="password" name="novaSenha" id="novaSenha" minlength="8" maxlength="72" autocomplete="new-password" required>
+        </div>
+        <button class="btn btn-outline-secondary w-100" type="submit">Alterar senha</button>
+    </form>
+
+    <form th:action="@{/perfil/desativar}" method="post" class="painel mt-3"
+          onsubmit="return confirm('Desativar sua conta? Seus anúncios ativos serão ocultados.')">
+        <h2 class="h5">Desativar conta</h2>
+        <p>Seus anúncios ativos deixam de aparecer e você não poderá mais entrar com esta conta.</p>
+        <button class="btn btn-outline-danger w-100" type="submit">Desativar conta</button>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

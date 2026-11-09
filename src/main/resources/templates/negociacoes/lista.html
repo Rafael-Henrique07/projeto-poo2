@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Negociações')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4">
+    <h1 class="h3 mb-3">Negociações</h1>
+    <div class="row g-4">
+        <section class="col-lg-6" th:each="grupo : ${ {'Como comprador', 'Como anunciante'} }"
+                 th:with="itens=${grupo == 'Como comprador'} ? ${comoComprador} : ${comoAnunciante}">
+            <h2 class="h5" th:text="${grupo}">Grupo</h2>
+            <div class="painel" th:if="${#lists.isEmpty(itens)}">
+                <p class="mb-0">Nenhuma negociação.</p>
+            </div>
+            <a class="painel item-negociacao" th:each="n : ${itens}" th:href="@{/negociacoes/{id}(id=${n.id})}">
+                <div>
+                    <p class="fw-bold mb-1" th:text="${n.tituloAnuncio}">Anúncio</p>
+                    <p class="detalhes mb-0" th:text="${n.outraParte + ' · desde ' + #temporals.format(n.dataInicio, 'dd/MM/yyyy')}">Pessoa</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge text-bg-secondary" th:text="${n.status.rotulo}">Aberta</span>
+                    <span class="badge text-bg-danger" th:if="${n.naoLidas > 0}" th:text="${n.naoLidas} + ' nova(s)'">1 nova</span>
+                </div>
+            </a>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

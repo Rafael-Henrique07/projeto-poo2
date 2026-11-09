@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<article th:fragment="card(a)" class="card cartao h-100">
+    <a th:href="@{/anuncios/{id}(id=${a.id})}" class="foto-capa">
+        <img th:if="${a.fotoPrincipal != null}" th:src="@{/uploads/{f}(f=${a.fotoPrincipal})}" th:alt="${a.titulo}">
+        <span th:if="${a.fotoPrincipal == null}" class="sem-foto" th:text="${a.veiculo.anoModelo}">1970</span>
+        <span th:if="${a.selo != null}" class="selo" th:text="${a.selo.rotulo}">Selo</span>
+    </a>
+    <div class="card-body d-flex flex-column">
+        <p class="categoria" th:text="${a.veiculo.categoria.nome}">Categoria</p>
+        <h2 class="card-title h5">
+            <a class="link-titulo" th:href="@{/anuncios/{id}(id=${a.id})}" th:text="${a.titulo}">Título</a>
+        </h2>
+        <p class="detalhes mb-1" th:text="${a.veiculo.marca + ' ' + a.veiculo.modelo + ' · ' + a.veiculo.anoFabricacao + '/' + a.veiculo.anoModelo}">Marca Modelo</p>
+        <p class="detalhes" th:text="${#numbers.formatInteger(a.veiculo.quilometragem, 1, 'POINT') + ' km · ' + a.anunciante.cidade + '/' + a.anunciante.uf}">km</p>
+        <p class="preco mt-auto mb-0" th:text="'R$ ' + ${#numbers.formatDecimal(a.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</p>
+    </div>
+</article>
+
+</body>
+</html>

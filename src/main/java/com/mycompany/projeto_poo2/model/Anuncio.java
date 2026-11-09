@@ -1,29 +1,64 @@
 package com.mycompany.projeto_poo2.model;
 
-public class Anuncio {
-    private Integer id;
-    private Usuario anunciante;
-    private String marca;
-    private String modelo;
-    private Integer ano;
-    private String motorizacao;
-    private Integer quilometragem;
-    private String descricao;
-    private String estadoConservacao;
-    private Double valor;
-    private String status;
+import com.mycompany.projeto_poo2.selo.TipoSelo;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
-    public Anuncio(Usuario anunciante, String marca, String modelo, Integer ano, String motorizacao, Integer quilometragem, String descricao, String estadoConservacao, Double valor, String status) {
+public class Anuncio {
+
+    private final Integer id;
+    private final Usuario anunciante;
+    private final Veiculo veiculo;
+    private final String titulo;
+    private final String descricao;
+    private final BigDecimal preco;
+    private final StatusAnuncio status;
+    private final TipoSelo selo;
+    private final LocalDateTime dataPublicacao;
+    private final LocalDateTime dataAtualizacao;
+    private List<Foto> fotos = List.of();
+
+    public Anuncio(Integer id, Usuario anunciante, Veiculo veiculo, String titulo, String descricao, BigDecimal preco,
+            StatusAnuncio status, TipoSelo selo, LocalDateTime dataPublicacao, LocalDateTime dataAtualizacao) {
+        this.id = id;
         this.anunciante = anunciante;
-        this.marca = marca;
-        this.modelo = modelo;
-        this.ano = ano;
-        this.motorizacao = motorizacao;
-        this.quilometragem = quilometragem;
+        this.veiculo = veiculo;
+        this.titulo = titulo;
         this.descricao = descricao;
-        this.estadoConservacao = estadoConservacao;
-        this.valor = valor;
-        this.status = "disponível";
+        this.preco = preco;
+        this.status = status;
+        this.selo = selo;
+        this.dataPublicacao = dataPublicacao;
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public boolean pertenceA(Integer usuarioId) {
+        return anunciante.getId().equals(usuarioId);
+    }
+
+    public boolean isAtivo() {
+        return status == StatusAnuncio.ATIVO;
+    }
+
+    public boolean isRemovido() {
+        return status == StatusAnuncio.REMOVIDO;
+    }
+
+    public String getFotoPrincipal() {
+        return fotos.stream()
+                .filter(Foto::isPrincipal)
+                .map(Foto::getCaminhoArquivo)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void setFotos(List<Foto> fotos) {
+        this.fotos = fotos;
+    }
+
+    public List<Foto> getFotos() {
+        return fotos;
     }
 
     public Integer getId() {
@@ -34,83 +69,35 @@ public class Anuncio {
         return anunciante;
     }
 
-    public String getMarca() {
-        return marca;
+    public Veiculo getVeiculo() {
+        return veiculo;
     }
 
-    public String getModelo() {
-        return modelo;
-    }
-
-    public Integer getAno() {
-        return ano;
-    }
-
-    public String getMotorizacao() {
-        return motorizacao;
-    }
-
-    public Integer getQuilometragem() {
-        return quilometragem;
+    public String getTitulo() {
+        return titulo;
     }
 
     public String getDescricao() {
         return descricao;
     }
 
-    public String getEstadoConservacao() {
-        return estadoConservacao;
+    public BigDecimal getPreco() {
+        return preco;
     }
 
-    public Double getValor() {
-        return valor;
-    }
-
-    public String getStatus() {
+    public StatusAnuncio getStatus() {
         return status;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public TipoSelo getSelo() {
+        return selo;
     }
 
-    public void setAnunciante(Usuario anunciante) {
-        this.anunciante = anunciante;
+    public LocalDateTime getDataPublicacao() {
+        return dataPublicacao;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public void setAno(Integer ano) {
-        this.ano = ano;
-    }
-
-    public void setMotorizacao(String motorizacao) {
-        this.motorizacao = motorizacao;
-    }
-
-    public void setQuilometragem(Integer quilometragem) {
-        this.quilometragem = quilometragem;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public void setEstadoConservacao(String estadoConservacao) {
-        this.estadoConservacao = estadoConservacao;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
     }
 }

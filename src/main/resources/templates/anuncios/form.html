@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${edicao} ? 'Editar anúncio' : 'Anunciar veículo')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4 estreito-largo">
+    <h1 class="h3 mb-3" th:text="${edicao} ? 'Editar anúncio' : 'Anunciar veículo'">Anunciar veículo</h1>
+    <form th:action="${edicao} ? @{/anuncios/{id}/editar(id=${anuncioId})} : @{/anuncios/novo}" method="post"
+          th:enctype="${edicao} ? 'application/x-www-form-urlencoded' : 'multipart/form-data'"
+          th:object="${form}" class="painel" novalidate>
+        <h2 class="h5">Anúncio</h2>
+        <div class="row g-3 mb-4">
+            <div class="col-md-8">
+                <label class="form-label" for="titulo">Título</label>
+                <input class="form-control" th:field="*{titulo}" id="titulo" maxlength="120" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="preco">Preço (R$)</label>
+                <input class="form-control" type="number" min="0.01" step="0.01" th:field="*{preco}" id="preco" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></div>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="descricao">Descrição</label>
+                <textarea class="form-control" th:field="*{descricao}" id="descricao" rows="4" maxlength="2000" required></textarea>
+                <div class="erro-campo" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="selo">Selo</label>
+                <select class="form-select" th:field="*{selo}" id="selo">
+                    <option value="">Sem selo</option>
+                    <option th:each="s : ${selos}" th:value="${s}" th:text="${s.rotulo}"></option>
+                </select>
+            </div>
+        </div>
+
+        <h2 class="h5">Veículo</h2>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label" for="categoriaId">Categoria</label>
+                <select class="form-select" th:field="*{categoriaId}" id="categoriaId" required>
+                    <option value="">Selecione</option>
+                    <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}"></option>
+                </select>
+                <div class="erro-campo" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="marca">Marca</label>
+                <input class="form-control" th:field="*{marca}" id="marca" maxlength="60" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="modelo">Modelo</label>
+                <input class="form-control" th:field="*{modelo}" id="modelo" maxlength="80" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="anoFabricacao">Ano de fabricação</label>
+                <input class="form-control" type="number" min="1900" th:field="*{anoFabricacao}" id="anoFabricacao" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('anoFabricacao')}" th:errors="*{anoFabricacao}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="anoModelo">Ano do modelo</label>
+                <input class="form-control" type="number" min="1900" th:field="*{anoModelo}" id="anoModelo" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('anoModelo')}" th:errors="*{anoModelo}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="quilometragem">Quilometragem</label>
+                <input class="form-control" type="number" min="0" th:field="*{quilometragem}" id="quilometragem" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('quilometragem')}" th:errors="*{quilometragem}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="cor">Cor</label>
+                <input class="form-control" th:field="*{cor}" id="cor" maxlength="40" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('cor')}" th:errors="*{cor}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="motor">Motor</label>
+                <input class="form-control" th:field="*{motor}" id="motor" maxlength="60" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('motor')}" th:errors="*{motor}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="potenciaCv">Potência (cv)</label>
+                <input class="form-control" type="number" min="1" th:field="*{potenciaCv}" id="potenciaCv" required>
+                <div class="erro-campo" th:if="${#fields.hasErrors('potenciaCv')}" th:errors="*{potenciaCv}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="combustivel">Combustível</label>
+                <select class="form-select" th:field="*{combustivel}" id="combustivel" required>
+                    <option value="">Selecione</option>
+                    <option th:each="c : ${combustiveis}" th:value="${c}" th:text="${c.rotulo}"></option>
+                </select>
+                <div class="erro-campo" th:if="${#fields.hasErrors('combustivel')}" th:errors="*{combustivel}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="cambio">Câmbio</label>
+                <select class="form-select" th:field="*{cambio}" id="cambio" required>
+                    <option value="">Selecione</option>
+                    <option th:each="c : ${cambios}" th:value="${c}" th:text="${c.rotulo}"></option>
+                </select>
+                <div class="erro-campo" th:if="${#fields.hasErrors('cambio')}" th:errors="*{cambio}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="conservacao">Estado de conservação</label>
+                <select class="form-select" th:field="*{conservacao}" id="conservacao" required>
+                    <option value="">Selecione</option>
+                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e.rotulo}"></option>
+                </select>
+                <div class="erro-campo" th:if="${#fields.hasErrors('conservacao')}" th:errors="*{conservacao}"></div>
+            </div>
+        </div>
+
+        <div class="mb-4" th:unless="${edicao}">
+            <h2 class="h5">Fotos</h2>
+            <label class="form-label" for="fotos">De 1 a 15 fotos em JPG ou PNG, com até 5 MB cada</label>
+            <input class="form-control" type="file" name="fotos" id="fotos" multiple accept="image/jpeg,image/png" required>
+            <p class="detalhes mt-1 mb-0">A primeira foto será a principal. A ordem pode ser ajustada depois em “Gerenciar fotos”.</p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-acento" type="submit" th:text="${edicao} ? 'Salvar alterações' : 'Publicar anúncio'">Publicar</button>
+            <a class="btn btn-outline-secondary" th:if="${edicao}" th:href="@{/anuncios/{id}/fotos(id=${anuncioId})}">Gerenciar fotos</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

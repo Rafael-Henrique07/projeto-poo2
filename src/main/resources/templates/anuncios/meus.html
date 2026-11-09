@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Meus anúncios')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="container py-4">
+    <h1 class="h3 mb-3">Meus anúncios</h1>
+    <div class="painel text-center py-5" th:if="${#lists.isEmpty(anuncios)}">
+        <p>Você ainda não publicou nenhum anúncio.</p>
+        <a class="btn btn-acento" th:href="@{/anuncios/novo}">Anunciar veículo</a>
+    </div>
+    <div class="table-responsive painel" th:unless="${#lists.isEmpty(anuncios)}">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr><th>Anúncio</th><th>Preço</th><th>Status</th><th class="text-end">Ações</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="a : ${anuncios}">
+                    <td><a th:href="@{/anuncios/{id}(id=${a.id})}" th:text="${a.titulo}"></a></td>
+                    <td class="text-nowrap" th:text="'R$ ' + ${#numbers.formatDecimal(a.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <td>
+                        <form th:action="@{/anuncios/{id}/status(id=${a.id})}" method="post" class="d-flex gap-1">
+                            <select class="form-select form-select-sm" name="status" th:aria-label="'Status de ' + ${a.titulo}">
+                                <option value="ATIVO" th:selected="${a.status.name() == 'ATIVO'}">Ativo</option>
+                                <option value="PAUSADO" th:selected="${a.status.name() == 'PAUSADO'}">Pausado</option>
+                                <option value="VENDIDO" th:selected="${a.status.name() == 'VENDIDO'}">Vendido</option>
+                            </select>
+                            <button class="btn btn-sm btn-outline-secondary" type="submit">Salvar</button>
+                        </form>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex flex-wrap gap-1 justify-content-end">
+                            <a class="btn btn-sm btn-outline-secondary" th:href="@{/anuncios/{id}/editar(id=${a.id})}">Editar</a>
+                            <a class="btn btn-sm btn-outline-secondary" th:href="@{/anuncios/{id}/fotos(id=${a.id})}">Fotos</a>
+                            <form th:action="@{/anuncios/{id}/excluir(id=${a.id})}" method="post"
+                                  onsubmit="return confirm('Excluir este anúncio? As negociações abertas serão encerradas.')">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

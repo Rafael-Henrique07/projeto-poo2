@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Clássicos à Venda'">Clássicos à Venda</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<header th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark topo">
+        <div class="container">
+            <a class="navbar-brand marca" th:href="@{/}">Clássicos à Venda</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+                    aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Veículos</a></li>
+                    <th:block th:if="${usuarioLogado != null}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/negociacoes}">Negociações
+                                <span class="badge rounded-pill text-bg-light" th:if="${naoLidas != null and naoLidas > 0}"
+                                      th:text="${naoLidas}">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/meus-anuncios}">Meus anúncios</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/perfil}">Meu perfil</a></li>
+                        <li class="nav-item" th:if="${usuarioLogado.admin()}">
+                            <a class="nav-link" th:href="@{/admin/categorias}">Categorias</a>
+                        </li>
+                    </th:block>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <a class="btn btn-acento btn-sm" th:href="@{/anuncios/novo}">Anunciar veículo</a>
+                    <a class="btn btn-outline-light btn-sm" th:if="${usuarioLogado == null}" th:href="@{/login}">Entrar</a>
+                    <form th:if="${usuarioLogado != null}" th:action="@{/logout}" method="post" class="d-flex align-items-center gap-2">
+                        <span class="navbar-text small" th:text="${usuarioLogado.nome()}">Nome</span>
+                        <button class="btn btn-outline-light btn-sm" type="submit">Sair</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-3" th:if="${sucesso != null or erro != null}">
+        <div class="alert alert-success mb-0" role="status" th:if="${sucesso != null}" th:text="${sucesso}"></div>
+        <div class="alert alert-danger mb-0" role="alert" th:if="${erro != null}" th:text="${erro}"></div>
+    </div>
+</header>
+
+<footer th:fragment="rodape" class="rodape">
+    <div class="container">Projeto Final de POO2 · UTFPR Cornélio Procópio</div>
+    <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</footer>
+
+</body>
+</html>
