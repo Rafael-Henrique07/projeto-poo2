@@ -39,7 +39,7 @@ public class AnuncioController {
 
     @GetMapping({"/", "/anuncios"})
     public String listar(@ModelAttribute("filtro") FiltroAnuncio filtro, Model model) {
-        model.addAttribute("pagina", anuncioServico.pesquisar(filtro));
+        model.addAttribute("anuncios", anuncioServico.pesquisar(filtro));
         model.addAttribute("categorias", categoriaServico.listar());
         model.addAttribute("selos", TipoSelo.values());
         model.addAttribute("estados", EstadoConservacao.values());
@@ -144,20 +144,6 @@ public class AnuncioController {
             @SessionAttribute(UsuarioSessao.CHAVE) UsuarioSessao usuario, RedirectAttributes atributos) {
         anuncioServico.adicionarFotos(id, fotos, usuario.id());
         atributos.addFlashAttribute("sucesso", "Fotos adicionadas.");
-        return redirecionarFotos(id);
-    }
-
-    @PostMapping("/anuncios/{id}/fotos/{fotoId}/principal")
-    public String definirPrincipal(@PathVariable Integer id, @PathVariable Integer fotoId,
-            @SessionAttribute(UsuarioSessao.CHAVE) UsuarioSessao usuario) {
-        anuncioServico.definirPrincipal(id, fotoId, usuario.id());
-        return redirecionarFotos(id);
-    }
-
-    @PostMapping("/anuncios/{id}/fotos/{fotoId}/mover")
-    public String moverFoto(@PathVariable Integer id, @PathVariable Integer fotoId, @RequestParam boolean paraCima,
-            @SessionAttribute(UsuarioSessao.CHAVE) UsuarioSessao usuario) {
-        anuncioServico.moverFoto(id, fotoId, paraCima, usuario.id());
         return redirecionarFotos(id);
     }
 

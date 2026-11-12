@@ -15,21 +15,9 @@
         <article class="painel item-foto" th:each="f, i : ${anuncio.fotos}">
             <img th:src="@{/uploads/{n}(n=${f.caminhoArquivo})}" th:alt="'Foto ' + ${i.count}">
             <div class="flex-grow-1">
-                <p class="mb-1 fw-bold" th:text="'Foto ' + ${i.count}">Foto 1</p>
-                <span class="badge text-bg-success" th:if="${f.principal}">Principal</span>
+                <p class="mb-0 fw-bold" th:text="'Foto ' + ${i.count}">Foto 1</p>
             </div>
             <div class="d-flex flex-wrap gap-1 justify-content-end">
-                <form th:action="@{/anuncios/{id}/fotos/{f}/mover(id=${anuncio.id},f=${f.id})}" method="post">
-                    <input type="hidden" name="paraCima" value="true">
-                    <button class="btn btn-sm btn-outline-secondary" type="submit" th:disabled="${i.first}" aria-label="Mover para cima">↑</button>
-                </form>
-                <form th:action="@{/anuncios/{id}/fotos/{f}/mover(id=${anuncio.id},f=${f.id})}" method="post">
-                    <input type="hidden" name="paraCima" value="false">
-                    <button class="btn btn-sm btn-outline-secondary" type="submit" th:disabled="${i.last}" aria-label="Mover para baixo">↓</button>
-                </form>
-                <form th:unless="${f.principal}" th:action="@{/anuncios/{id}/fotos/{f}/principal(id=${anuncio.id},f=${f.id})}" method="post">
-                    <button class="btn btn-sm btn-outline-secondary" type="submit">Tornar principal</button>
-                </form>
                 <form th:action="@{/anuncios/{id}/fotos/{f}/remover(id=${anuncio.id},f=${f.id})}" method="post"
                       onsubmit="return confirm('Remover esta foto?')">
                     <button class="btn btn-sm btn-outline-danger" type="submit">Remover</button>

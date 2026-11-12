@@ -3,7 +3,6 @@ package com.mycompany.projeto_poo2.controller;
 import com.mycompany.projeto_poo2.dto.CategoriaForm;
 import com.mycompany.projeto_poo2.exception.RegraNegocioException;
 import com.mycompany.projeto_poo2.model.Categoria;
-import com.mycompany.projeto_poo2.service.AnuncioServico;
 import com.mycompany.projeto_poo2.service.CategoriaServico;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -21,11 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminController {
 
     private final CategoriaServico categoriaServico;
-    private final AnuncioServico anuncioServico;
 
-    public AdminController(CategoriaServico categoriaServico, AnuncioServico anuncioServico) {
+    public AdminController(CategoriaServico categoriaServico) {
         this.categoriaServico = categoriaServico;
-        this.anuncioServico = anuncioServico;
     }
 
     @GetMapping("/categorias")
@@ -89,12 +86,5 @@ public class AdminController {
         categoriaServico.excluir(id);
         atributos.addFlashAttribute("sucesso", "Categoria excluída.");
         return "redirect:/admin/categorias";
-    }
-
-    @PostMapping("/anuncios/{id}/remover")
-    public String removerAnuncio(@PathVariable Integer id, RedirectAttributes atributos) {
-        anuncioServico.moderar(id);
-        atributos.addFlashAttribute("sucesso", "Anúncio removido.");
-        return "redirect:/";
     }
 }

@@ -38,18 +38,6 @@ public class PropostaDAO {
                 .stream().findFirst();
     }
 
-    public void cancelarPendentes(Integer negociacaoId) {
-        jdbc.update("UPDATE proposta SET status = ? WHERE negociacao_id = ? AND status = ?",
-                StatusProposta.CANCELADA.name(), negociacaoId, StatusProposta.PENDENTE.name());
-    }
-
-    public void cancelarPendentesPorAnuncio(Integer anuncioId) {
-        jdbc.update("""
-                UPDATE proposta p JOIN negociacao n ON n.id = p.negociacao_id
-                SET p.status = ? WHERE n.anuncio_id = ? AND p.status = ?
-                """, StatusProposta.CANCELADA.name(), anuncioId, StatusProposta.PENDENTE.name());
-    }
-
     public boolean responder(Integer id, StatusProposta novoStatus) {
         return jdbc.update("UPDATE proposta SET status = ? WHERE id = ? AND status = ?", novoStatus.name(), id,
                 StatusProposta.PENDENTE.name()) == 1;

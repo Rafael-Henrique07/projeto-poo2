@@ -3,7 +3,6 @@ package com.mycompany.projeto_poo2.controller;
 import com.mycompany.projeto_poo2.dto.Ufs;
 import com.mycompany.projeto_poo2.dto.UsuarioSessao;
 import com.mycompany.projeto_poo2.exception.RegraNegocioException;
-import com.mycompany.projeto_poo2.service.NegociacaoServico;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
@@ -17,21 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    private final NegociacaoServico negociacaoServico;
-
-    public GlobalControllerAdvice(NegociacaoServico negociacaoServico) {
-        this.negociacaoServico = negociacaoServico;
-    }
-
     @ModelAttribute("usuarioLogado")
     public UsuarioSessao usuarioLogado(
             @SessionAttribute(name = UsuarioSessao.CHAVE, required = false) UsuarioSessao usuario) {
         return usuario;
-    }
-
-    @ModelAttribute("naoLidas")
-    public int naoLidas(@SessionAttribute(name = UsuarioSessao.CHAVE, required = false) UsuarioSessao usuario) {
-        return usuario == null ? 0 : negociacaoServico.contarNaoLidas(usuario.id());
     }
 
     @ModelAttribute("ufs")

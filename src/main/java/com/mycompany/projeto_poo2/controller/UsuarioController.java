@@ -121,13 +121,6 @@ public class UsuarioController {
         return "redirect:/perfil";
     }
 
-    @PostMapping("/perfil/desativar")
-    public String desativar(@SessionAttribute(UsuarioSessao.CHAVE) UsuarioSessao usuario, HttpSession sessao) {
-        perfilServico.desativar(usuario.id());
-        sessao.invalidate();
-        return "redirect:/";
-    }
-
     private void iniciarSessao(HttpServletRequest request, Usuario usuario) {
         request.getSession(true);
         request.changeSessionId();

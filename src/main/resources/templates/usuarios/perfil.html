@@ -24,13 +24,6 @@
         </div>
         <button class="btn btn-outline-secondary w-100" type="submit">Alterar senha</button>
     </form>
-
-    <form th:action="@{/perfil/desativar}" method="post" class="painel mt-3"
-          onsubmit="return confirm('Desativar sua conta? Seus anúncios ativos serão ocultados.')">
-        <h2 class="h5">Desativar conta</h2>
-        <p>Seus anúncios ativos deixam de aparecer e você não poderá mais entrar com esta conta.</p>
-        <button class="btn btn-outline-danger w-100" type="submit">Desativar conta</button>
-    </form>
 </main>
 
 <footer th:replace="~{fragments/layout :: rodape}"></footer>

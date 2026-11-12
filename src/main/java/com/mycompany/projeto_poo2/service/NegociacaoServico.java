@@ -61,12 +61,10 @@ public class NegociacaoServico {
         return negociacaoId;
     }
 
-    @Transactional
     public Negociacao abrir(Integer id, Integer usuarioId) {
         Negociacao negociacao = carregar(id, usuarioId);
         negociacao.setMensagens(mensagens.listarPorNegociacao(id));
         negociacao.setPropostas(propostas.listarPorNegociacao(id));
-        mensagens.marcarComoLidas(id, usuarioId);
         return negociacao;
     }
 
@@ -97,10 +95,6 @@ public class NegociacaoServico {
 
     public List<ResumoNegociacao> listarComoAnunciante(Integer usuarioId) {
         return negociacoes.listarComoAnunciante(usuarioId);
-    }
-
-    public int contarNaoLidas(Integer usuarioId) {
-        return mensagens.contarNaoLidas(usuarioId);
     }
 
     private Anuncio buscarAnuncio(Integer anuncioId) {

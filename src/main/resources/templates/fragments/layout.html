@@ -21,12 +21,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" th:href="@{/}">Veículos</a></li>
                     <th:block th:if="${usuarioLogado != null}">
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/negociacoes}">Negociações
-                                <span class="badge rounded-pill text-bg-light" th:if="${naoLidas != null and naoLidas > 0}"
-                                      th:text="${naoLidas}">0</span>
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/negociacoes}">Negociações</a></li>
                         <li class="nav-item"><a class="nav-link" th:href="@{/meus-anuncios}">Meus anúncios</a></li>
                         <li class="nav-item"><a class="nav-link" th:href="@{/perfil}">Meu perfil</a></li>
                         <li class="nav-item" th:if="${usuarioLogado.admin()}">

@@ -195,14 +195,6 @@ h1, h2, .marca {
     font-size: .875rem;
 }
 
-.paginacao {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
 .lista-fotos {
     display: grid;
     gap: .75rem;

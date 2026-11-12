@@ -17,7 +17,6 @@ public class FiltroAnuncio {
     private String cidade;
     private String uf;
     private TipoSelo selo;
-    private Integer pagina = 1;
 
     public String getBusca() {
         return busca;
@@ -105,13 +104,5 @@ public class FiltroAnuncio {
 
     public void setSelo(TipoSelo selo) {
         this.selo = selo;
-    }
-
-    public Integer getPagina() {
-        return pagina;
-    }
-
-    public void setPagina(Integer pagina) {
-        this.pagina = pagina;
     }
 }

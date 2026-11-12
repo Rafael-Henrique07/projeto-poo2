@@ -8,12 +8,12 @@
     <div class="row g-4">
         <div class="col-lg-7">
             <div class="foto-detalhe">
-                <img th:if="${anuncio.fotoPrincipal != null}" th:src="@{/uploads/{f}(f=${anuncio.fotoPrincipal})}" th:alt="${anuncio.titulo}">
-                <span th:if="${anuncio.fotoPrincipal == null}" class="sem-foto" th:text="${v.anoModelo}">1970</span>
+                <img th:if="${anuncio.capa != null}" th:src="@{/uploads/{f}(f=${anuncio.capa})}" th:alt="${anuncio.titulo}">
+                <span th:if="${anuncio.capa == null}" class="sem-foto" th:text="${v.anoModelo}">1970</span>
             </div>
             <div class="miniaturas" th:if="${#lists.size(anuncio.fotos) > 1}">
                 <a th:each="f : ${anuncio.fotos}" th:href="@{/uploads/{n}(n=${f.caminhoArquivo})}" target="_blank" rel="noopener">
-                    <img th:src="@{/uploads/{n}(n=${f.caminhoArquivo})}" th:alt="'Foto ' + ${f.ordem}">
+                    <img th:src="@{/uploads/{n}(n=${f.caminhoArquivo})}" th:alt="${anuncio.titulo}">
                 </a>
             </div>
             <section class="painel mt-3">
@@ -54,11 +54,6 @@
                     <a class="btn btn-outline-secondary" th:href="@{/anuncios/{id}/editar(id=${anuncio.id})}">Editar anúncio</a>
                     <a class="btn btn-outline-secondary" th:href="@{/anuncios/{id}/fotos(id=${anuncio.id})}">Gerenciar fotos</a>
                 </div>
-                <form th:if="${usuarioLogado != null and usuarioLogado.admin() and !anuncio.removido}" class="mt-2"
-                      th:action="@{/admin/anuncios/{id}/remover(id=${anuncio.id})}" method="post"
-                      onsubmit="return confirm('Remover este anúncio por ser irregular?')">
-                    <button class="btn btn-outline-danger w-100" type="submit">Remover anúncio (moderação)</button>
-                </form>
             </section>
 
             <section class="painel mt-3" th:if="${anuncio.ativo and !ehDono}">

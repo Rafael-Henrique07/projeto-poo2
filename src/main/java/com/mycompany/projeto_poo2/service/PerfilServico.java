@@ -1,6 +1,5 @@
 package com.mycompany.projeto_poo2.service;
 
-import com.mycompany.projeto_poo2.dao.AnuncioDAO;
 import com.mycompany.projeto_poo2.dao.UsuarioDAO;
 import com.mycompany.projeto_poo2.dto.PerfilForm;
 import com.mycompany.projeto_poo2.exception.RecursoNaoEncontradoException;
@@ -15,14 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerfilServico {
 
     private final UsuarioDAO usuarios;
-    private final AnuncioDAO anuncios;
     private final ValidadorUsuario validador;
     private final PasswordEncoder encoder;
 
-    public PerfilServico(UsuarioDAO usuarios, AnuncioDAO anuncios, ValidadorUsuario validador,
-            PasswordEncoder encoder) {
+    public PerfilServico(UsuarioDAO usuarios, ValidadorUsuario validador, PasswordEncoder encoder) {
         this.usuarios = usuarios;
-        this.anuncios = anuncios;
         this.validador = validador;
         this.encoder = encoder;
     }
@@ -47,11 +43,5 @@ public class PerfilServico {
         }
         validador.validarSenha(novaSenha);
         usuarios.atualizarSenha(id, encoder.encode(novaSenha));
-    }
-
-    @Transactional
-    public void desativar(Integer id) {
-        usuarios.desativar(id);
-        anuncios.pausarAtivosDoUsuario(id);
     }
 }

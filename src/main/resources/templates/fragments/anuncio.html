@@ -4,8 +4,8 @@
 
 <article th:fragment="card(a)" class="card cartao h-100">
     <a th:href="@{/anuncios/{id}(id=${a.id})}" class="foto-capa">
-        <img th:if="${a.fotoPrincipal != null}" th:src="@{/uploads/{f}(f=${a.fotoPrincipal})}" th:alt="${a.titulo}">
-        <span th:if="${a.fotoPrincipal == null}" class="sem-foto" th:text="${a.veiculo.anoModelo}">1970</span>
+        <img th:if="${a.capa != null}" th:src="@{/uploads/{f}(f=${a.capa})}" th:alt="${a.titulo}">
+        <span th:if="${a.capa == null}" class="sem-foto" th:text="${a.veiculo.anoModelo}">1970</span>
         <span th:if="${a.selo != null}" class="selo" th:text="${a.selo.rotulo}">Selo</span>
     </a>
     <div class="card-body d-flex flex-column">

@@ -38,6 +38,10 @@ public class Negociacao {
         return propostas.stream().anyMatch(Proposta::isAceita);
     }
 
+    public boolean isPropostaPendente() {
+        return propostas.stream().anyMatch(Proposta::isPendente);
+    }
+
     public void setMensagens(List<Mensagem> mensagens) {
         this.mensagens = mensagens;
     }

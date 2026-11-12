@@ -31,11 +31,7 @@ public class NegociacaoDAO {
 
     private static final RowMapper<ResumoNegociacao> MAPEADOR_RESUMO = (rs, linha) -> new ResumoNegociacao(
             rs.getInt("id"), rs.getString("titulo"), rs.getString("outra_parte"),
-            rs.getObject("data_inicio", LocalDateTime.class), StatusNegociacao.valueOf(rs.getString("status")),
-            rs.getInt("nao_lidas"));
-
-    private static final String NAO_LIDAS = "(SELECT COUNT(*) FROM mensagem m WHERE m.negociacao_id = n.id "
-            + "AND m.lida = FALSE AND m.remetente_id <> ?) AS nao_lidas";
+            rs.getObject("data_inicio", LocalDateTime.class), StatusNegociacao.valueOf(rs.getString("status")));
 
     private final JdbcTemplate jdbc;
 
@@ -76,14 +72,14 @@ public class NegociacaoDAO {
     }
 
     public List<ResumoNegociacao> listarComoComprador(Integer usuarioId) {
-        return jdbc.query("SELECT n.id, n.data_inicio, n.status, a.titulo, u.nome AS outra_parte, " + NAO_LIDAS
-                + " FROM negociacao n JOIN anuncio a ON a.id = n.anuncio_id JOIN usuario u ON u.id = a.anunciante_id "
-                + "WHERE n.comprador_id = ? ORDER BY n.id DESC", MAPEADOR_RESUMO, usuarioId, usuarioId);
+        return jdbc.query("SELECT n.id, n.data_inicio, n.status, a.titulo, u.nome AS outra_parte "
+                + "FROM negociacao n JOIN anuncio a ON a.id = n.anuncio_id JOIN usuario u ON u.id = a.anunciante_id "
+                + "WHERE n.comprador_id = ? ORDER BY n.id DESC", MAPEADOR_RESUMO, usuarioId);
     }
 
     public List<ResumoNegociacao> listarComoAnunciante(Integer usuarioId) {
-        return jdbc.query("SELECT n.id, n.data_inicio, n.status, a.titulo, u.nome AS outra_parte, " + NAO_LIDAS
-                + " FROM negociacao n JOIN anuncio a ON a.id = n.anuncio_id JOIN usuario u ON u.id = n.comprador_id "
-                + "WHERE a.anunciante_id = ? ORDER BY n.id DESC", MAPEADOR_RESUMO, usuarioId, usuarioId);
+        return jdbc.query("SELECT n.id, n.data_inicio, n.status, a.titulo, u.nome AS outra_parte "
+                + "FROM negociacao n JOIN anuncio a ON a.id = n.anuncio_id JOIN usuario u ON u.id = n.comprador_id "
+                + "WHERE a.anunciante_id = ? ORDER BY n.id DESC", MAPEADOR_RESUMO, usuarioId);
     }
 }

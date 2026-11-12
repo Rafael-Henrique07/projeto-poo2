@@ -43,11 +43,9 @@ public class AnuncioDAO {
                    v.potencia_cv, v.combustivel, v.cambio, v.conservacao,
                    c.id AS c_id, c.nome AS c_nome, c.descricao AS c_descricao,
                    u.id AS u_id, u.nome AS u_nome, u.email AS u_email, u.telefone AS u_telefone,
-                   u.cidade AS u_cidade, u.uf AS u_uf, u.perfil AS u_perfil, u.ativo AS u_ativo,
-                   fp.caminho_arquivo AS foto_principal
-            """ + FROM + """
-             LEFT JOIN foto fp ON fp.anuncio_id = a.id AND fp.principal = TRUE
-            """;
+                   u.cidade AS u_cidade, u.uf AS u_uf, u.perfil AS u_perfil,
+                   (SELECT f.caminho_arquivo FROM foto f WHERE f.anuncio_id = a.id ORDER BY f.id LIMIT 1) AS capa
+            """ + FROM;
 
     private static final RowMapper<Anuncio> MAPEADOR = (rs, linha) -> {
         Categoria categoria = new Categoria(rs.getInt("c_id"), rs.getString("c_nome"), rs.getString("c_descricao"));
@@ -57,15 +55,15 @@ public class AnuncioDAO {
                 TipoCambio.valueOf(rs.getString("cambio")), EstadoConservacao.valueOf(rs.getString("conservacao")));
         Usuario anunciante = new Usuario(rs.getInt("u_id"), rs.getString("u_nome"), rs.getString("u_email"), null,
                 rs.getString("u_telefone"), rs.getString("u_cidade"), rs.getString("u_uf"),
-                PerfilUsuario.valueOf(rs.getString("u_perfil")), rs.getBoolean("u_ativo"), null);
+                PerfilUsuario.valueOf(rs.getString("u_perfil")), null);
         String selo = rs.getString("selo");
         Anuncio anuncio = new Anuncio(rs.getInt("id"), anunciante, veiculo, rs.getString("titulo"),
                 rs.getString("descricao"), rs.getBigDecimal("preco"), StatusAnuncio.valueOf(rs.getString("status")),
                 selo == null ? null : TipoSelo.valueOf(selo), rs.getObject("data_publicacao", LocalDateTime.class),
                 rs.getObject("data_atualizacao", LocalDateTime.class));
-        String fotoPrincipal = rs.getString("foto_principal");
-        if (fotoPrincipal != null) {
-            anuncio.setFotos(List.of(new Foto(null, fotoPrincipal, 1, true)));
+        String capa = rs.getString("capa");
+        if (capa != null) {
+            anuncio.setFotos(List.of(new Foto(null, capa)));
         }
         return anuncio;
     };
@@ -109,12 +107,6 @@ public class AnuncioDAO {
                 status.name(), Timestamp.valueOf(LocalDateTime.now()), id);
     }
 
-    public void pausarAtivosDoUsuario(Integer usuarioId) {
-        jdbc.update("UPDATE anuncio SET status = ?, data_atualizacao = ? WHERE anunciante_id = ? AND status = ?",
-                StatusAnuncio.PAUSADO.name(), Timestamp.valueOf(LocalDateTime.now()), usuarioId,
-                StatusAnuncio.ATIVO.name());
-    }
-
     public Optional<Anuncio> buscarPorId(Integer id) {
         return jdbc.query(SELECT + " WHERE a.id = ?", MAPEADOR, id).stream().findFirst();
     }
@@ -124,19 +116,10 @@ public class AnuncioDAO {
                 anuncianteId, StatusAnuncio.REMOVIDO.name());
     }
 
-    public int contar(FiltroAnuncio filtro) {
+    public List<Anuncio> pesquisar(FiltroAnuncio filtro) {
         List<Object> parametros = new ArrayList<>();
         String where = montarWhere(filtro, parametros);
-        Integer total = jdbc.queryForObject("SELECT COUNT(*)" + FROM + where, Integer.class, parametros.toArray());
-        return total == null ? 0 : total;
-    }
-
-    public List<Anuncio> pesquisar(FiltroAnuncio filtro, int limite, int deslocamento) {
-        List<Object> parametros = new ArrayList<>();
-        String where = montarWhere(filtro, parametros);
-        parametros.add(limite);
-        parametros.add(deslocamento);
-        return jdbc.query(SELECT + where + " ORDER BY a.data_publicacao DESC, a.id DESC LIMIT ? OFFSET ?", MAPEADOR,
+        return jdbc.query(SELECT + where + " ORDER BY a.data_publicacao DESC, a.id DESC", MAPEADOR,
                 parametros.toArray());
     }
 

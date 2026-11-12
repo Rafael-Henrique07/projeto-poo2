@@ -45,12 +45,8 @@ public class Anuncio {
         return status == StatusAnuncio.REMOVIDO;
     }
 
-    public String getFotoPrincipal() {
-        return fotos.stream()
-                .filter(Foto::isPrincipal)
-                .map(Foto::getCaminhoArquivo)
-                .findFirst()
-                .orElse(null);
+    public String getCapa() {
+        return fotos.isEmpty() ? null : fotos.get(0).getCaminhoArquivo();
     }
 
     public void setFotos(List<Foto> fotos) {

@@ -10,16 +10,14 @@ public class ResumoNegociacao {
     private final String outraParte;
     private final LocalDateTime dataInicio;
     private final StatusNegociacao status;
-    private final int naoLidas;
 
     public ResumoNegociacao(Integer id, String tituloAnuncio, String outraParte, LocalDateTime dataInicio,
-            StatusNegociacao status, int naoLidas) {
+            StatusNegociacao status) {
         this.id = id;
         this.tituloAnuncio = tituloAnuncio;
         this.outraParte = outraParte;
         this.dataInicio = dataInicio;
         this.status = status;
-        this.naoLidas = naoLidas;
     }
 
     public Integer getId() {
@@ -40,9 +38,5 @@ public class ResumoNegociacao {
 
     public StatusNegociacao getStatus() {
         return status;
-    }
-
-    public int getNaoLidas() {
-        return naoLidas;
     }
 }

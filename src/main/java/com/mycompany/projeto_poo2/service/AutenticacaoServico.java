@@ -19,12 +19,8 @@ public class AutenticacaoServico {
     }
 
     public Usuario autenticar(String email, String senha) {
-        Usuario usuario = usuarios.buscarPorEmail(email.trim().toLowerCase(Locale.ROOT))
+        return usuarios.buscarPorEmail(email.trim().toLowerCase(Locale.ROOT))
                 .filter(u -> encoder.matches(senha, u.getSenhaHash()))
                 .orElseThrow(() -> new RegraNegocioException("E-mail ou senha inválidos."));
-        if (!usuario.isAtivo()) {
-            throw new RegraNegocioException("Esta conta foi desativada.");
-        }
-        return usuario;
     }
 }

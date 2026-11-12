@@ -12,11 +12,10 @@ public class Usuario {
     private final String cidade;
     private final String uf;
     private final PerfilUsuario perfil;
-    private final boolean ativo;
     private final LocalDateTime dataCadastro;
 
     public Usuario(Integer id, String nome, String email, String senhaHash, String telefone, String cidade,
-            String uf, PerfilUsuario perfil, boolean ativo, LocalDateTime dataCadastro) {
+            String uf, PerfilUsuario perfil, LocalDateTime dataCadastro) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -25,17 +24,16 @@ public class Usuario {
         this.cidade = cidade;
         this.uf = uf;
         this.perfil = perfil;
-        this.ativo = ativo;
         this.dataCadastro = dataCadastro;
     }
 
     public static Usuario novo(String nome, String email, String senhaHash, String telefone, String cidade, String uf) {
-        return new Usuario(null, nome, email, senhaHash, telefone, cidade, uf, PerfilUsuario.COMUM, true,
+        return new Usuario(null, nome, email, senhaHash, telefone, cidade, uf, PerfilUsuario.COMUM,
                 LocalDateTime.now());
     }
 
     public static Usuario resumo(Integer id, String nome) {
-        return new Usuario(id, nome, null, null, null, null, null, null, true, null);
+        return new Usuario(id, nome, null, null, null, null, null, null, null);
     }
 
     public boolean isAdministrador() {
@@ -72,10 +70,6 @@ public class Usuario {
 
     public PerfilUsuario getPerfil() {
         return perfil;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
     }
 
     public LocalDateTime getDataCadastro() {

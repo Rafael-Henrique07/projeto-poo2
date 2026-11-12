@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS usuario (
     cidade         VARCHAR(100) NOT NULL,
     uf             CHAR(2)      NOT NULL,
     perfil         ENUM('COMUM','ADMINISTRADOR') NOT NULL DEFAULT 'COMUM',
-    ativo          BOOLEAN      NOT NULL DEFAULT TRUE,
     data_cadastro  DATETIME     NOT NULL,
     CONSTRAINT uk_usuario_email UNIQUE (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -61,8 +60,6 @@ CREATE TABLE IF NOT EXISTS foto (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     anuncio_id       INT          NOT NULL,
     caminho_arquivo  VARCHAR(255) NOT NULL,
-    ordem            INT          NOT NULL,
-    principal        BOOLEAN      NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_foto_anuncio FOREIGN KEY (anuncio_id) REFERENCES anuncio (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -82,7 +79,7 @@ CREATE TABLE IF NOT EXISTS proposta (
     negociacao_id  INT           NOT NULL,
     valor          DECIMAL(12,2) NOT NULL,
     data_proposta  DATETIME      NOT NULL,
-    status         ENUM('PENDENTE','ACEITA','RECUSADA','CANCELADA') NOT NULL DEFAULT 'PENDENTE',
+    status         ENUM('PENDENTE','ACEITA','RECUSADA') NOT NULL DEFAULT 'PENDENTE',
     CONSTRAINT fk_proposta_negociacao FOREIGN KEY (negociacao_id) REFERENCES negociacao (id) ON DELETE CASCADE,
     CONSTRAINT ck_proposta_valor CHECK (valor > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -93,7 +90,6 @@ CREATE TABLE IF NOT EXISTS mensagem (
     remetente_id   INT           NOT NULL,
     conteudo       VARCHAR(1000) NOT NULL,
     data_envio     DATETIME      NOT NULL,
-    lida           BOOLEAN       NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_mensagem_negociacao FOREIGN KEY (negociacao_id) REFERENCES negociacao (id) ON DELETE CASCADE,
     CONSTRAINT fk_mensagem_remetente FOREIGN KEY (remetente_id) REFERENCES usuario (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

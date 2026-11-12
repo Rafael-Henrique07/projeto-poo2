@@ -16,8 +16,7 @@ public class MensagemDAO {
             rs.getInt("id"),
             Usuario.resumo(rs.getInt("remetente_id"), rs.getString("remetente_nome")),
             rs.getString("conteudo"),
-            rs.getObject("data_envio", LocalDateTime.class),
-            rs.getBoolean("lida"));
+            rs.getObject("data_envio", LocalDateTime.class));
 
     private final JdbcTemplate jdbc;
 
@@ -26,28 +25,12 @@ public class MensagemDAO {
     }
 
     public void inserir(Integer negociacaoId, Integer remetenteId, String conteudo) {
-        jdbc.update("INSERT INTO mensagem (negociacao_id, remetente_id, conteudo, data_envio, lida) "
-                + "VALUES (?, ?, ?, ?, FALSE)",
+        jdbc.update("INSERT INTO mensagem (negociacao_id, remetente_id, conteudo, data_envio) VALUES (?, ?, ?, ?)",
                 negociacaoId, remetenteId, conteudo, Timestamp.valueOf(LocalDateTime.now()));
     }
 
     public List<Mensagem> listarPorNegociacao(Integer negociacaoId) {
         return jdbc.query("SELECT m.*, u.nome AS remetente_nome FROM mensagem m JOIN usuario u ON u.id = m.remetente_id "
                 + "WHERE m.negociacao_id = ? ORDER BY m.id", MAPEADOR, negociacaoId);
-    }
-
-    public void marcarComoLidas(Integer negociacaoId, Integer leitorId) {
-        jdbc.update("UPDATE mensagem SET lida = TRUE WHERE negociacao_id = ? AND remetente_id <> ? AND lida = FALSE",
-                negociacaoId, leitorId);
-    }
-
-    public int contarNaoLidas(Integer usuarioId) {
-        Integer total = jdbc.queryForObject("""
-                SELECT COUNT(*) FROM mensagem m
-                JOIN negociacao n ON n.id = m.negociacao_id
-                JOIN anuncio a ON a.id = n.anuncio_id
-                WHERE m.lida = FALSE AND m.remetente_id <> ? AND (n.comprador_id = ? OR a.anunciante_id = ?)
-                """, Integer.class, usuarioId, usuarioId, usuarioId);
-        return total == null ? 0 : total;
     }
 }

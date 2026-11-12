@@ -6,10 +6,10 @@ INSERT IGNORE INTO categoria (id, nome, descricao) VALUES
     (5, 'Esportivo', 'Carros voltados ao desempenho'),
     (6, 'Utilitário', 'Veículos de carga e transporte');
 
-INSERT IGNORE INTO usuario (id, nome, email, senha_hash, telefone, cidade, uf, perfil, ativo, data_cadastro) VALUES
-    (1, 'Ana Anunciante', 'anunciante@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990001', 'Cornélio Procópio', 'PR', 'COMUM', TRUE, NOW()),
-    (2, 'Caio Comprador', 'comprador@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990002', 'Londrina', 'PR', 'COMUM', TRUE, NOW()),
-    (3, 'Administrador', 'admin@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990003', 'Cornélio Procópio', 'PR', 'ADMINISTRADOR', TRUE, NOW());
+INSERT IGNORE INTO usuario (id, nome, email, senha_hash, telefone, cidade, uf, perfil, data_cadastro) VALUES
+    (1, 'Ana Anunciante', 'anunciante@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990001', 'Cornélio Procópio', 'PR', 'COMUM', NOW()),
+    (2, 'Caio Comprador', 'comprador@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990002', 'Londrina', 'PR', 'COMUM', NOW()),
+    (3, 'Administrador', 'admin@demo.com', '$2a$10$VOvo2Jfzzi66bZtklASRXOjboT4SfL6exfFvUIRu/yHDMhJ4V0YSe', '43999990003', 'Cornélio Procópio', 'PR', 'ADMINISTRADOR', NOW());
 
 INSERT IGNORE INTO veiculo (id, categoria_id, marca, modelo, ano_fabricacao, ano_modelo, quilometragem, cor, motor, potencia_cv, combustivel, cambio, conservacao) VALUES
     (1, 2, 'Chevrolet', 'Opala SS', 1976, 1976, 92000, 'Preto', '4.1 seis cilindros', 148, 'GASOLINA', 'MANUAL', 'RESTAURADO'),

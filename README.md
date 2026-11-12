@@ -32,13 +32,13 @@ O banco `veiculos_bd` e as tabelas são criados automaticamente a partir de `src
 
 ## Funcionalidades
 
-- Cadastro, login, edição de perfil, troca de senha e desativação de conta
+- Cadastro, login, edição de perfil e troca de senha
 - Cadastro, edição, exclusão e alteração de status de anúncios
-- Envio de 1 a 15 fotos por anúncio, com ordem e foto principal
-- Pesquisa paginada com filtros por categoria, marca, ano, preço, conservação, cidade e UF
+- Envio de 1 a 15 fotos por anúncio
+- Pesquisa com filtros por categoria, marca, ano, preço, conservação, cidade e UF
 - Negociação entre comprador e anunciante, com mensagens e propostas
 - Liberação do contato do anunciante quando uma proposta é aceita
-- Gerenciamento de categorias e moderação de anúncios pelo administrador
+- Gerenciamento de categorias pelo administrador
 
 ## Organização do código
 

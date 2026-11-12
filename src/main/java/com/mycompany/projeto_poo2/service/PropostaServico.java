@@ -38,7 +38,9 @@ public class PropostaServico {
         if (valor == null || valor.signum() <= 0 || valor.scale() > 2 || valor.compareTo(VALOR_MAXIMO) > 0) {
             throw new RegraNegocioException("Informe um valor maior que zero, com até duas casas decimais.");
         }
-        propostas.cancelarPendentes(negociacaoId);
+        if (propostas.listarPorNegociacao(negociacaoId).stream().anyMatch(Proposta::isPendente)) {
+            throw new RegraNegocioException("Aguarde o anunciante responder a proposta pendente.");
+        }
         propostas.inserir(negociacaoId, valor);
         mensagens.inserir(negociacaoId, compradorId, "Proposta enviada: " + formatar(valor));
     }

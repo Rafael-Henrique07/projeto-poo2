@@ -3,8 +3,7 @@ package com.mycompany.projeto_poo2.model;
 public enum StatusProposta {
     PENDENTE("Pendente"),
     ACEITA("Aceita"),
-    RECUSADA("Recusada"),
-    CANCELADA("Cancelada");
+    RECUSADA("Recusada");
 
     private final String rotulo;
 

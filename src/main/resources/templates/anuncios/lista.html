@@ -77,22 +77,15 @@
         </aside>
 
         <section class="col-lg-9">
-            <p class="contagem" th:text="${pagina.totalItens} + ' anúncio(s) encontrado(s)'">0 anúncios</p>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" th:unless="${#lists.isEmpty(pagina.itens)}">
-                <div class="col" th:each="a : ${pagina.itens}">
+            <p class="contagem" th:text="${#lists.size(anuncios)} + ' anúncio(s) encontrado(s)'">0 anúncios</p>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" th:unless="${#lists.isEmpty(anuncios)}">
+                <div class="col" th:each="a : ${anuncios}">
                     <article th:replace="~{fragments/anuncio :: card(${a})}"></article>
                 </div>
             </div>
-            <div class="painel text-center py-5" th:if="${#lists.isEmpty(pagina.itens)}">
+            <div class="painel text-center py-5" th:if="${#lists.isEmpty(anuncios)}">
                 <p class="mb-0">Nenhum anúncio encontrado com esses filtros.</p>
             </div>
-            <nav class="paginacao" th:if="${pagina.totalPaginas > 1}" aria-label="Paginação">
-                <a class="btn btn-outline-secondary btn-sm" th:classappend="${pagina.temAnterior} ? '' : 'disabled'"
-                   th:href="@{/(busca=${filtro.busca},categoriaId=${filtro.categoriaId},marca=${filtro.marca},anoMin=${filtro.anoMin},anoMax=${filtro.anoMax},precoMin=${filtro.precoMin},precoMax=${filtro.precoMax},conservacao=${filtro.conservacao},cidade=${filtro.cidade},uf=${filtro.uf},selo=${filtro.selo},pagina=${pagina.numero - 1})}">Anterior</a>
-                <span th:text="'Página ' + ${pagina.numero} + ' de ' + ${pagina.totalPaginas}">Página 1 de 1</span>
-                <a class="btn btn-outline-secondary btn-sm" th:classappend="${pagina.temProxima} ? '' : 'disabled'"
-                   th:href="@{/(busca=${filtro.busca},categoriaId=${filtro.categoriaId},marca=${filtro.marca},anoMin=${filtro.anoMin},anoMax=${filtro.anoMax},precoMin=${filtro.precoMin},precoMax=${filtro.precoMax},conservacao=${filtro.conservacao},cidade=${filtro.cidade},uf=${filtro.uf},selo=${filtro.selo},pagina=${pagina.numero + 1})}">Próxima</a>
-            </nav>
         </section>
     </div>
 </main>

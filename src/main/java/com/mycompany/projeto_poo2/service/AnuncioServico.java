@@ -3,11 +3,9 @@ package com.mycompany.projeto_poo2.service;
 import com.mycompany.projeto_poo2.dao.AnuncioDAO;
 import com.mycompany.projeto_poo2.dao.FotoDAO;
 import com.mycompany.projeto_poo2.dao.NegociacaoDAO;
-import com.mycompany.projeto_poo2.dao.PropostaDAO;
 import com.mycompany.projeto_poo2.dao.VeiculoDAO;
 import com.mycompany.projeto_poo2.dto.AnuncioForm;
 import com.mycompany.projeto_poo2.dto.FiltroAnuncio;
-import com.mycompany.projeto_poo2.dto.Pagina;
 import com.mycompany.projeto_poo2.dto.UsuarioSessao;
 import com.mycompany.projeto_poo2.exception.RecursoNaoEncontradoException;
 import com.mycompany.projeto_poo2.exception.RegraNegocioException;
@@ -17,8 +15,6 @@ import com.mycompany.projeto_poo2.model.Foto;
 import com.mycompany.projeto_poo2.model.StatusAnuncio;
 import com.mycompany.projeto_poo2.model.Veiculo;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,34 +23,25 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class AnuncioServico {
 
-    private static final int ITENS_POR_PAGINA = 20;
-
     private final AnuncioDAO anuncios;
     private final VeiculoDAO veiculos;
     private final FotoDAO fotos;
     private final NegociacaoDAO negociacoes;
-    private final PropostaDAO propostas;
     private final CategoriaServico categorias;
     private final ArmazenamentoFotoServico armazenamento;
 
     public AnuncioServico(AnuncioDAO anuncios, VeiculoDAO veiculos, FotoDAO fotos, NegociacaoDAO negociacoes,
-            PropostaDAO propostas, CategoriaServico categorias, ArmazenamentoFotoServico armazenamento) {
+            CategoriaServico categorias, ArmazenamentoFotoServico armazenamento) {
         this.anuncios = anuncios;
         this.veiculos = veiculos;
         this.fotos = fotos;
         this.negociacoes = negociacoes;
-        this.propostas = propostas;
         this.categorias = categorias;
         this.armazenamento = armazenamento;
     }
 
-    public Pagina<Anuncio> pesquisar(FiltroAnuncio filtro) {
-        int total = anuncios.contar(filtro);
-        int totalPaginas = Math.max(1, (int) Math.ceil((double) total / ITENS_POR_PAGINA));
-        int solicitada = filtro.getPagina() == null ? 1 : filtro.getPagina();
-        int pagina = Math.min(Math.max(1, solicitada), totalPaginas);
-        List<Anuncio> itens = anuncios.pesquisar(filtro, ITENS_POR_PAGINA, (pagina - 1) * ITENS_POR_PAGINA);
-        return new Pagina<>(itens, pagina, totalPaginas, total);
+    public List<Anuncio> pesquisar(FiltroAnuncio filtro) {
+        return anuncios.pesquisar(filtro);
     }
 
     public Anuncio buscar(Integer id) {
@@ -66,10 +53,9 @@ public class AnuncioServico {
 
     public Anuncio buscarVisivel(Integer id, UsuarioSessao usuario) {
         Anuncio anuncio = buscar(id);
-        boolean admin = usuario != null && usuario.admin();
         boolean dono = usuario != null && anuncio.pertenceA(usuario.id());
-        boolean oculto = anuncio.isRemovido() || anuncio.getStatus() == StatusAnuncio.PAUSADO;
-        if (oculto && !admin && !(dono && !anuncio.isRemovido())) {
+        boolean oculto = anuncio.getStatus() == StatusAnuncio.PAUSADO && !dono;
+        if (anuncio.isRemovido() || oculto) {
             throw new RecursoNaoEncontradoException("Anúncio não encontrado.");
         }
         return anuncio;
@@ -97,7 +83,7 @@ public class AnuncioServico {
         Integer veiculoId = veiculos.inserir(montarVeiculo(null, form));
         Integer anuncioId = anuncios.inserir(usuarioId, veiculoId, form.getTitulo().trim(), form.getDescricao().trim(),
                 form.getPreco(), form.getSelo());
-        gravarFotos(anuncioId, enviados, 0, true);
+        gravarFotos(anuncioId, enviados);
         return anuncioId;
     }
 
@@ -112,13 +98,8 @@ public class AnuncioServico {
     @Transactional
     public void excluir(Integer id, Integer usuarioId) {
         buscarDoAnunciante(id, usuarioId);
-        retirar(id);
-    }
-
-    @Transactional
-    public void moderar(Integer id) {
-        buscar(id);
-        retirar(id);
+        anuncios.atualizarStatus(id, StatusAnuncio.REMOVIDO);
+        negociacoes.encerrarPorAnuncio(id);
     }
 
     @Transactional
@@ -129,7 +110,7 @@ public class AnuncioServico {
         }
         anuncios.atualizarStatus(id, status);
         if (status == StatusAnuncio.VENDIDO) {
-            encerrarNegociacoes(id);
+            negociacoes.encerrarPorAnuncio(id);
         }
     }
 
@@ -141,30 +122,7 @@ public class AnuncioServico {
         if (enviados.isEmpty()) {
             throw new RegraNegocioException("Selecione pelo menos uma foto.");
         }
-        int maiorOrdem = anuncio.getFotos().stream().mapToInt(Foto::getOrdem).max().orElse(0);
-        gravarFotos(id, enviados, maiorOrdem, existentes == 0);
-    }
-
-    @Transactional
-    public void definirPrincipal(Integer id, Integer fotoId, Integer usuarioId) {
-        Anuncio anuncio = buscarDoAnunciante(id, usuarioId);
-        localizar(anuncio, fotoId);
-        fotos.definirPrincipal(id, fotoId);
-    }
-
-    @Transactional
-    public void moverFoto(Integer id, Integer fotoId, boolean paraCima, Integer usuarioId) {
-        Anuncio anuncio = buscarDoAnunciante(id, usuarioId);
-        List<Foto> ordenadas = new ArrayList<>(anuncio.getFotos());
-        int atual = ordenadas.indexOf(localizar(anuncio, fotoId));
-        int destino = paraCima ? atual - 1 : atual + 1;
-        if (destino < 0 || destino >= ordenadas.size()) {
-            return;
-        }
-        Collections.swap(ordenadas, atual, destino);
-        for (int i = 0; i < ordenadas.size(); i++) {
-            fotos.atualizarOrdem(ordenadas.get(i).getId(), i + 1);
-        }
+        gravarFotos(id, enviados);
     }
 
     @Transactional
@@ -175,27 +133,12 @@ public class AnuncioServico {
             throw new RegraNegocioException("O anúncio precisa ter pelo menos uma foto.");
         }
         fotos.remover(fotoId);
-        if (foto.isPrincipal()) {
-            Foto nova = anuncio.getFotos().stream().filter(f -> !f.getId().equals(fotoId)).findFirst().orElseThrow();
-            fotos.definirPrincipal(id, nova.getId());
-        }
         armazenamento.apagar(foto.getCaminhoArquivo());
     }
 
-    private void retirar(Integer id) {
-        anuncios.atualizarStatus(id, StatusAnuncio.REMOVIDO);
-        encerrarNegociacoes(id);
-    }
-
-    private void encerrarNegociacoes(Integer anuncioId) {
-        propostas.cancelarPendentesPorAnuncio(anuncioId);
-        negociacoes.encerrarPorAnuncio(anuncioId);
-    }
-
-    private void gravarFotos(Integer anuncioId, List<MultipartFile> enviados, int ordemInicial, boolean definirPrincipal) {
-        List<String> nomes = armazenamento.salvar(enviados);
-        for (int i = 0; i < nomes.size(); i++) {
-            fotos.inserir(anuncioId, nomes.get(i), ordemInicial + i + 1, definirPrincipal && i == 0);
+    private void gravarFotos(Integer anuncioId, List<MultipartFile> enviados) {
+        for (String nome : armazenamento.salvar(enviados)) {
+            fotos.inserir(anuncioId, nome);
         }
     }
 

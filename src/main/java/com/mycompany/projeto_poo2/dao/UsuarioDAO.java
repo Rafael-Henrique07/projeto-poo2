@@ -25,7 +25,6 @@ public class UsuarioDAO {
             rs.getString("cidade"),
             rs.getString("uf"),
             PerfilUsuario.valueOf(rs.getString("perfil")),
-            rs.getBoolean("ativo"),
             rs.getObject("data_cadastro", LocalDateTime.class));
 
     private final JdbcTemplate jdbc;
@@ -35,8 +34,8 @@ public class UsuarioDAO {
     }
 
     public Integer inserir(Usuario usuario) {
-        String sql = "INSERT INTO usuario (nome, email, senha_hash, telefone, cidade, uf, perfil, ativo, data_cadastro) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nome, email, senha_hash, telefone, cidade, uf, perfil, data_cadastro) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder chave = new GeneratedKeyHolder();
         jdbc.update(conexao -> {
             PreparedStatement comando = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -47,8 +46,7 @@ public class UsuarioDAO {
             comando.setString(5, usuario.getCidade());
             comando.setString(6, usuario.getUf());
             comando.setString(7, usuario.getPerfil().name());
-            comando.setBoolean(8, usuario.isAtivo());
-            comando.setTimestamp(9, Timestamp.valueOf(usuario.getDataCadastro()));
+            comando.setTimestamp(8, Timestamp.valueOf(usuario.getDataCadastro()));
             return comando;
         }, chave);
         return chave.getKey().intValue();
@@ -75,9 +73,5 @@ public class UsuarioDAO {
 
     public void atualizarSenha(Integer id, String senhaHash) {
         jdbc.update("UPDATE usuario SET senha_hash = ? WHERE id = ?", senhaHash, id);
-    }
-
-    public void desativar(Integer id) {
-        jdbc.update("UPDATE usuario SET ativo = FALSE WHERE id = ?", id);
     }
 }

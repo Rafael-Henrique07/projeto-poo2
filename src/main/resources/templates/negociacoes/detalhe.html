@@ -44,10 +44,10 @@
 
             <section class="painel mt-3" th:if="${ehComprador and negociacao.aberta and a.ativo}">
                 <h2 class="h5">Enviar proposta</h2>
-                <form th:action="@{/negociacoes/{id}/propostas(id=${negociacao.id})}" method="post">
+                <p class="mb-0" th:if="${negociacao.propostaPendente}">Aguardando o anunciante responder a sua proposta.</p>
+                <form th:unless="${negociacao.propostaPendente}" th:action="@{/negociacoes/{id}/propostas(id=${negociacao.id})}" method="post">
                     <label class="form-label" for="valor">Valor (R$)</label>
                     <input class="form-control mb-2" type="number" min="0.01" step="0.01" name="valor" id="valor" required>
-                    <p class="detalhes">Uma nova proposta cancela a proposta pendente anterior.</p>
                     <button class="btn btn-acento w-100" type="submit">Enviar proposta</button>
                 </form>
             </section>

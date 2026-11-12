@@ -8,14 +8,12 @@ public class Mensagem {
     private final Usuario remetente;
     private final String conteudo;
     private final LocalDateTime dataEnvio;
-    private final boolean lida;
 
-    public Mensagem(Integer id, Usuario remetente, String conteudo, LocalDateTime dataEnvio, boolean lida) {
+    public Mensagem(Integer id, Usuario remetente, String conteudo, LocalDateTime dataEnvio) {
         this.id = id;
         this.remetente = remetente;
         this.conteudo = conteudo;
         this.dataEnvio = dataEnvio;
-        this.lida = lida;
     }
 
     public Integer getId() {
@@ -32,9 +30,5 @@ public class Mensagem {
 
     public LocalDateTime getDataEnvio() {
         return dataEnvio;
-    }
-
-    public boolean isLida() {
-        return lida;
     }
 }
